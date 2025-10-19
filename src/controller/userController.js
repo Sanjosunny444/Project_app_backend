@@ -57,3 +57,18 @@ exports.signUp = async (req, res) => {
         res.status(500).json({ message: 'Server error','error':error.message || 'error creating user' });
     }
 };
+
+
+//for testing purpose   
+// safe: return username only
+exports.getAllUsers = async (req, res) => {
+  try {
+    // all fields except password
+    const users = await User.find().select('password username');
+    console.log('Fetched users:', users);
+    res.status(200).json(users);
+  } catch (error) {
+    res.status(500).json({ message: 'Server error', error: error.message });
+  }
+};
+
