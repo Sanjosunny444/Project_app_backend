@@ -13,7 +13,7 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 connectDB();
-
+console.log('Database connection attempting....');
 app.use(express.json());
 
 app.use('/api/v1/users', userRoutes);
