@@ -64,17 +64,7 @@ exports.login = async (req, res) => {
             });
             await newToken.save();
         }
-        // save the token and refresh token in the database
-        // const newToken = new Token_model({
-        //     username: user.username,
-        //     token: token,
-        //     refreshToken: refreshToken,
-        // });
-        // await newToken.save(    
-
-        //);
         res.status(200).json({ message: 'Login successful',"user":user.username, token , refreshToken });
-        //if successful create the refresh token also
     }
     catch (error) {
         res.status(500).json({ message: 'Server error','error':error.message || 'error creating user' });
@@ -100,6 +90,37 @@ exports.signUp = async (req, res) => {
     catch (error) {
         res.status(500).json({ message: 'Server error','error':error.message || 'error creating user' });
     }
+};
+
+exports.logout = async (req, res) => {
+    try {
+        const { username, token, refreshToken } = req.body;
+        const tokenEntry = await Token_model.findOne({ username });
+        if (!tokenEntry) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+        const no_of_tokens_before = tokenEntry.token.length;
+        const no_of_refreshTokens_before = tokenEntry.refreshToken.length;
+        if(no_of_refreshTokens_before==1 && no_of_tokens_before==1){
+            //delete the whole entry
+            await Token_model.deleteOne({ username });
+            return res.status(200).json({ message: 'Logged out successfully from all devices' });
+        }else{
+            //check if token and refresh token exist
+            const tokenExists = tokenEntry.token.includes(token);
+            const refreshTokenExists = tokenEntry.refreshToken.includes(refreshToken);
+            if (!tokenExists || !refreshTokenExists) {
+                return res.status(400).json({ message: 'Invalid token or refresh token' });
+            }
+            //remove the token and refresh token from array
+            tokenEntry.token = tokenEntry.token.filter(t => t !== token);
+            tokenEntry.refreshToken = tokenEntry.refreshToken.filter(t => t !== refreshToken);
+            await tokenEntry.save();
+            return res.status(200).json({ message: 'Logged out successfully' });
+        }
+    } catch (error) {
+        res.status(500).json({ message: 'Server error', 'error': error.message || 'error logging out user' });
+    }   
 };
 
 
