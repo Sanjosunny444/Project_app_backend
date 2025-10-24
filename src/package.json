@@ -3,11 +3,11 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
-  "scripts": {
-    "dev": "nodemon index.js",
-    "start": "node index.js",
-    "dev:env": "dotenvx run -- yarn dev"
-  },
+"scripts": {
+  "dev": "nodemon index.js",
+  "start": "node index.js",
+  "dev:env": "dotenvx run -- yarn dev"
+},
   "keywords": [],
   "author": "",
   "license": "ISC",
@@ -18,8 +18,7 @@
     "express": "^5.1.0",
     "jsonwebtoken": "^9.0.2",
     "mongodb": "^6.20.0",
-    "mongoose": "^8.19.1",
-    "yarn": "^1.22.22"
+    "mongoose": "^8.19.1"
   },
   "devDependencies": {
     "nodemon": "^3.1.10"
