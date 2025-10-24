@@ -18,6 +18,9 @@ app.use(express.json());
 
 app.use('/api/v1/users', userRoutes);
 
+app.listen(PORT, () => {
+    console.log(`Server is running on port ${PORT}`);
+});
 app.get('/', (req, res) => {
     res.send('welcome to the Express server authentication system');
 });

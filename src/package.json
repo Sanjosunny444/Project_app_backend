@@ -6,7 +6,7 @@
 "scripts": {
   "dev": "nodemon index.js",
   "start": "node index.js",
-  "dev:env": "dotenvx run -- yarn dev"
+  "dev:env": "node index.js"
 },
   "keywords": [],
   "author": "",
