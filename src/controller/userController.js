@@ -6,6 +6,7 @@ const User = require('../models/userModels');
 const jwt = require('jsonwebtoken');
 const Token_model = require('../models/tokenModel');
 const { checklimitplus_tokens } = require('./tokenController');
+const {delete_expired_tokens_in_this_username} = require('./tokenController');
 
 exports.login = async (req, res) => {
     try {
@@ -28,7 +29,8 @@ exports.login = async (req, res) => {
         if (checklimit) {
             return res.status(403).json({ message: 'Token limit exceeded. Please logout from other devices.' });
         }
-        
+        // delete existing tokens and refresh tokens that are expired
+        await delete_expired_tokens_in_this_username(username);
         const generateToken = (user) => {
             return jwt.sign(
                 { id: user._id, username: user.username },
