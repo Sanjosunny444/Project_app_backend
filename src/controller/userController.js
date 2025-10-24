@@ -1,10 +1,11 @@
 
 
 
-
 const bcrypt = require('bcrypt');
 const User = require('../models/userModels');
 const jwt = require('jsonwebtoken');
+const Token_model = require('../models/tokenModel');
+const { checklimitplus_tokens } = require('./tokenController');
 
 exports.login = async (req, res) => {
     try {
@@ -20,7 +21,14 @@ exports.login = async (req, res) => {
         if (!isMatch) {
             return res.status(400).json({ message: 'Invalid username or password' });
         }
-        console.log('JWT_SECRET:', process.env.JWT_SECRET ? 'Loaded ✅' : 'Missing ❌');
+        console.log('User entered in:', user.username);
+        console.log('User entered in:', user.password);
+
+        const checklimit = await checklimitplus_tokens(username);
+        if (checklimit) {
+            return res.status(403).json({ message: 'Token limit exceeded. Please logout from other devices.' });
+        }
+        
         const generateToken = (user) => {
             return jwt.sign(
                 { id: user._id, username: user.username },
@@ -29,13 +37,49 @@ exports.login = async (req, res) => {
             );
         }
         const token = generateToken(user);
-        res.status(200).json({ message: 'Login successful'," user":user, token });
+        const generaterefreshToken = (user) => {
+            return jwt.sign(
+                { id: user._id, username: user.username },
+                process.env.JWT_SECRET,
+                { expiresIn: '1d' }
+            );
+        }
+        const refreshToken = generaterefreshToken(user);
+        console.log('Generated Token:', token);
+        console.log('Generated Refresh Token:', refreshToken);
+        //check username in token model
+        const tokenEntry = await Token_model.findOne({ username });
+        //console.log('Token Entry from DB:', tokenEntry);
+        //add token to array if exists
+        if (tokenEntry) {
+            tokenEntry.token.push(token);
+            tokenEntry.refreshToken.push(refreshToken);
+            await tokenEntry.save();
+        }
+        else {
+            const newToken = new Token_model({
+                username: user.username,
+                token: [token],
+                refreshToken: [refreshToken],
+            });
+            await newToken.save();
+        }
+        // save the token and refresh token in the database
+        // const newToken = new Token_model({
+        //     username: user.username,
+        //     token: token,
+        //     refreshToken: refreshToken,
+        // });
+        // await newToken.save(    
+
+        //);
+        res.status(200).json({ message: 'Login successful',"user":user.username, token , refreshToken });
+        //if successful create the refresh token also
     }
     catch (error) {
         res.status(500).json({ message: 'Server error','error':error.message || 'error creating user' });
     }
 }
-
 
 exports.signUp = async (req, res) => {
     try {
