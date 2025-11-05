@@ -85,3 +85,54 @@ exports.verifyrefereshTokeninDB = async (req, res) => {
         return false;
     }
 };
+
+exports.renew_refresh_token = async (req, res) => {
+  try {
+    const { username, refreshToken } = req.body;
+
+    // Validate input
+    if (!username || !refreshToken) {
+      return res.status(400).json({ message: 'Missing username or refresh token' });
+    }
+
+    // Detect array or string in schema
+    const tokenEntry = await Token_model.findOne({
+      username,
+      $or: [
+        { refreshToken: refreshToken },
+        { refreshToken: { $in: [refreshToken] } }
+      ]
+    });
+
+    if (!tokenEntry) {
+      return res.status(404).json({ message: 'User not found or invalid refresh token' });
+    }
+
+    // Generate new token
+    const newRefreshToken = jwt.sign(
+      { id: tokenEntry._id, username: tokenEntry.username },
+      process.env.JWT_SECRET,
+      { expiresIn: '1d' }
+    );
+
+    // Replace token (array or string-safe)
+    if (Array.isArray(tokenEntry.refreshToken)) {
+      tokenEntry.refreshToken = tokenEntry.refreshToken.filter(t => t !== refreshToken);
+      tokenEntry.refreshToken.push(newRefreshToken);
+    } else {
+      tokenEntry.refreshToken = newRefreshToken;
+    }
+
+    await tokenEntry.save();
+
+    res.status(200).json({
+      message: 'Refresh token renewed successfully',
+      refreshToken: newRefreshToken
+    });
+    console.log(`old token ${refreshToken} replaced with new token ${newRefreshToken}`, refreshToken, newRefreshToken);
+
+  } catch (error) {
+    console.error('Error renewing refresh token:', error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+};
