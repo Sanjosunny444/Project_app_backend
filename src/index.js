@@ -8,11 +8,13 @@ const { connectDB } = require('./config/database');
 // const { use } = require('react');
 dotenv.config();
 const userRoutes = require('./routes/user.Routes');
+const { connectMqtt } = require('./config/Mqtt_connect');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
 connectDB();
+connectMqtt();
 console.log('Database connection attempting....');
 app.use(express.json());
 
