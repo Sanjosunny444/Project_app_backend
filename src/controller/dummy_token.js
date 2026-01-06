@@ -50,7 +50,7 @@ void recallToken() {
     sendHttpRequest(client, server_client, 443, "POST", "/api/recall", "application/json", body);
 }
 */
-exports.registerDevice = () => {
+exports.registerDevice = async (req, res) => {
     try {
         res.status(200).json({ message: 'Device registered successfully' });
     }
@@ -59,9 +59,10 @@ exports.registerDevice = () => {
     }
 };
 
-const token_number = 1;
+var token_number = 1;
 
-exports.callNextPatient = () => {
+exports.callNextPatient = async (req, res) => {
+    token_number =token_number + 1;
     try {
         res.status(200).json({ message: 'Patient called successfully', token_number: token_number + 1 });
     }
@@ -70,7 +71,7 @@ exports.callNextPatient = () => {
     }
 };
 
-exports.recallToken = () => {
+exports.recallToken = async (req, res) => {
     try {
         res.status(200).json({ message: 'Token recalled successfully', token_number: token_number});
     }
