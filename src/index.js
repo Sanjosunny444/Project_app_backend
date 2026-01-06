@@ -1,29 +1,29 @@
-
-
-
-
+const http = require('http');
 const express = require('express');
-const dotenv = require('dotenv'); 
+const dotenv = require('dotenv');
 const { connectDB } = require('./config/database');
-// const { use } = require('react');
-dotenv.config();
-const userRoutes = require('./routes/user.Routes');
 const { connectMqtt } = require('./config/Mqtt_connect');
+const userRoutes = require('./routes/user.Routes');
+const { startOcppServer } = require('./ocpp/ocppconfig');
+
+dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-connectDB();
-connectMqtt();
-console.log('Database connection attempting....');
 app.use(express.json());
-
 app.use('/api/v1/users', userRoutes);
 
 app.get('/', (req, res) => {
-    res.send('welcome to the Express server authentication system');
+    res.send('Welcome to Express + OCPP Server');
 });
 
-app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`);
+const httpServer = http.createServer(app);
+
+connectDB();
+connectMqtt();
+//startOcppServer(httpServer);
+
+httpServer.listen(PORT, () => {
+    console.log(`🚀 Server running on port ${PORT}`);
 });

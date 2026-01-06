@@ -1,8 +1,4 @@
 
-
-
-
-
 var mqtt = require('mqtt')
 exports.connectMqtt = () => {
 var options = {
@@ -25,14 +21,27 @@ client.on('error', function (error) {
     console.log(error);
 });
 
+// {
+// "command":"send_data"
+// "value":10
+// }
+
 client.on('message', function (topic, message) {
     // called each time a message is received
     console.log('Received message:', topic, message.toString());
+    if (topic === 'my/test/topic') {
+        var data = JSON.parse(message.toString());
+        if(data.command === 'send_data'){
+            console.log(data);
+            const value = data.value;
+            console.log(value);
+        }
+    }
 });
 
 // subscribe to topic 'my/test/topic'
 client.subscribe('my/test/topic');
 
 // publish message 'Hello' to topic 'my/test/topic'
-client.publish('my/test/topic', 'Hello');
+//client.publish('my/test/topic', 'Hello');
 };
