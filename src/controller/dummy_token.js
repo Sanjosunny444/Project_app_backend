@@ -51,6 +51,7 @@ void recallToken() {
 }
 */
 exports.registerDevice = async (req, res) => {
+    console.log(req.body);
     try {
         res.status(200).json({ message: 'Device registered successfully' });
     }
@@ -62,6 +63,7 @@ exports.registerDevice = async (req, res) => {
 var token_number = 1;
 
 exports.callNextPatient = async (req, res) => {
+    console.log(req.body);
     token_number =token_number + 1;
     try {
         res.status(200).json({ message: 'Patient called successfully', token_number: token_number + 1 });
@@ -72,6 +74,7 @@ exports.callNextPatient = async (req, res) => {
 };
 
 exports.recallToken = async (req, res) => {
+    console.log(req.body);
     try {
         res.status(200).json({ message: 'Token recalled successfully', token_number: token_number});
     }
