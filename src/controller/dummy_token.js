@@ -74,7 +74,7 @@ exports.callNextPatient = async (req, res) => {
     token_number =token_number + 1;
     try {
         res.status(200).json({ command : 'callnext', message: 'Patient called successfully',
-                            token_number: token_number + 1 , counter_number: counter_number});
+                             counter_number: counter_number, token_number: token_number + 1 });
     }
     catch (error) {
         res.status(500).json({ command : 'callnext', message: 'Server error' });
