@@ -53,10 +53,16 @@ void recallToken() {
 exports.registerDevice = async (req, res) => {
     console.log(req.body);
     try {
-        res.status(200).json({ message: 'Device registered successfully' });
+        res.status(200).json({ 
+            command: "register_device",
+            message: 'Device registered successfully' 
+        });
     }
     catch (error) {
-        res.status(500).json({ message: 'Server error' });
+        res.status(500).json({ 
+            command: "register_device",
+            message: 'Server error' 
+        });
     }
 };
 
@@ -66,19 +72,19 @@ exports.callNextPatient = async (req, res) => {
     console.log(req.body);
     token_number =token_number + 1;
     try {
-        res.status(200).json({ message: 'Patient called successfully', token_number: token_number + 1 });
+        res.status(200).json({ command : 'call_next', message: 'Patient called successfully', token_number: token_number + 1 });
     }
     catch (error) {
-        res.status(500).json({ message: 'Server error' });
+        res.status(500).json({ command : 'call_next', message: 'Server error' });
     }
 };
 
 exports.recallToken = async (req, res) => {
     console.log(req.body);
     try {
-        res.status(200).json({ message: 'Token recalled successfully', token_number: token_number});
+        res.status(200).json({ command : 'recall_token', message: 'Token recalled successfully', token_number: token_number});
     }
     catch (error) {
-        res.status(500).json({ message: 'Server error' });
+        res.status(500).json({command : 'recall_token', message: 'Server error' });
     }
 }
