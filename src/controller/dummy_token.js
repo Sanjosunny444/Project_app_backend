@@ -54,37 +54,39 @@ exports.registerDevice = async (req, res) => {
     console.log(req.body);
     try {
         res.status(200).json({ 
-            command: "register_device",
+            command: "register",
             message: 'Device registered successfully' 
         });
     }
     catch (error) {
         res.status(500).json({ 
-            command: "register_device",
+            command: "register",
             message: 'Server error' 
         });
     }
 };
 
 var token_number = 1;
+const counter_number = 1;
 
 exports.callNextPatient = async (req, res) => {
     console.log(req.body);
     token_number =token_number + 1;
     try {
-        res.status(200).json({ command : 'call_next', message: 'Patient called successfully', token_number: token_number + 1 });
+        res.status(200).json({ command : 'callnext', message: 'Patient called successfully',
+                            token_number: token_number + 1 , counter_number: counter_number});
     }
     catch (error) {
-        res.status(500).json({ command : 'call_next', message: 'Server error' });
+        res.status(500).json({ command : 'callnext', message: 'Server error' });
     }
 };
 
 exports.recallToken = async (req, res) => {
     console.log(req.body);
     try {
-        res.status(200).json({ command : 'recall_token', message: 'Token recalled successfully', token_number: token_number});
+        res.status(200).json({ command : 'recalltoken', message: 'Token recalled successfully', token_number: token_number , counter_number: counter_number});
     }
     catch (error) {
-        res.status(500).json({command : 'recall_token', message: 'Server error' });
+        res.status(500).json({command : 'recalltoken', message: 'Server error' });
     }
 }
