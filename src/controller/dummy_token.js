@@ -55,7 +55,8 @@ exports.registerDevice = async (req, res) => {
     try {
         res.status(200).json({ 
             command: "register",
-            message: 'Device registered successfully' 
+            message: 'Device registered successfully',
+            counter_number : counter_number
         });
     }
     catch (error) {
