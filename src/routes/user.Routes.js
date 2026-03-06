@@ -7,7 +7,7 @@ const { signUp, getAllUsers, logout } = require('../controller/userController');
 const { login } = require('../controller/userController');
 const { verifyToken } = require('../config/isAuth');
 const {verifyrefereshTokeninDB, renew_refresh_token} = require('../controller/tokenController');
-const {registerDevice , callNextPatient , recallToken} = require('../controller/dummy_token');
+const {registerDevice , callNextPatient ,startConsultationSession,stopConsultationSession, recallToken} = require('../controller/dummy_token');
 const router = express.Router();
 
 router.post('/login', login);
@@ -19,4 +19,6 @@ router.post("/renew_refresh_token",renew_refresh_token);
 router.post("/register", registerDevice);
 router.get("/callnext", callNextPatient);
 router.post("/recalltoken", recallToken);
+router.post("/startsession", startConsultationSession);
+router.post("/stopsession", stopConsultationSession);
 module.exports = router;
